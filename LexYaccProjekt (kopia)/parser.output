@@ -1,0 +1,595 @@
+Bezużyteczne reguły w analizatorze z powodu konfliktów
+
+    6 wyrazenie: ZNAK '=' ZNAK
+   13          | '-' ZNAK
+
+
+Stan 1 konflikty: 1 przesunięcie/redukcja
+Stan 4 konflikty: 5 przesunięcie/redukcja
+Stan 5 konflikty: 1 przesunięcie/redukcja
+Stan 6 konflikty: 1 przesunięcie/redukcja
+Stan 13 konflikty: 1 przesunięcie/redukcja
+Stan 14 konflikty: 7 redukcja/redukcja
+Stan 16 konflikty: 6 przesunięcie/redukcja
+Stan 18 konflikty: 1 przesunięcie/redukcja
+Stan 19 konflikty: 1 przesunięcie/redukcja
+Stan 20 konflikty: 1 przesunięcie/redukcja
+Stan 21 konflikty: 1 przesunięcie/redukcja
+Stan 22 konflikty: 1 przesunięcie/redukcja
+Stan 29 konflikty: 5 przesunięcie/redukcja, 7 redukcja/redukcja
+Stan 30 konflikty: 5 przesunięcie/redukcja
+
+
+Gramatyka
+
+    0 $accept: program $end
+
+    1 program: program wyrazenie '\n'
+    2        | %empty
+
+    3 wyrazenie: LICZBA
+    4          | ZNAK
+    5          | ZNAK '=' wyrazenie
+    6          | ZNAK '=' ZNAK
+    7          | ZNAK '+' ZNAK
+    8          | ZNAK '-' ZNAK
+    9          | ZNAK '*' ZNAK
+   10          | ZNAK '/' ZNAK
+   11          | ZNAK '^' ZNAK
+   12          | '{' ZNAK '}'
+   13          | '-' ZNAK
+   14          | wyrazenie '+' wyrazenie
+   15          | wyrazenie '-' wyrazenie
+   16          | wyrazenie '*' wyrazenie
+   17          | wyrazenie '/' wyrazenie
+   18          | wyrazenie '^' wyrazenie
+   19          | '{' wyrazenie '}'
+   20          | '-' wyrazenie
+   21          | %empty
+
+
+Symbole terminalne i reguły, w których występują
+
+$end (0) 0
+'\n' (10) 1
+'*' (42) 9 16
+'+' (43) 7 14
+'-' (45) 8 13 15 20
+'/' (47) 10 17
+'=' (61) 5 6
+'^' (94) 11 18
+'{' (123) 12 19
+'}' (125) 12 19
+error (256)
+LICZBA (258) 3
+ZNAK (259) 4 5 6 7 8 9 10 11 12 13
+NEG (260)
+
+
+Symbole nieterminalne i reguły, w których występują
+
+$accept (15)
+    po lewej: 0
+program (16)
+    po lewej: 1 2, po prawej: 0 1
+wyrazenie (17)
+    po lewej: 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21, po prawej:
+    1 5 14 15 16 17 18 19 20
+
+
+Stan 0
+
+    0 $accept: . program $end
+
+    $domyślnie  redukcja przy użyciu reguły 2 (program)
+
+    program  przejście do stanu 1
+
+
+Stan 1
+
+    0 $accept: program . $end
+    1 program: program . wyrazenie '\n'
+
+    $end    przesunięcie, i przejście do stanu 2
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 7
+
+
+Stan 2
+
+    0 $accept: program $end .
+
+    $domyślnie  akceptowanie
+
+
+Stan 3
+
+    3 wyrazenie: LICZBA .
+
+    $domyślnie  redukcja przy użyciu reguły 3 (wyrazenie)
+
+
+Stan 4
+
+    4 wyrazenie: ZNAK .
+    5          | ZNAK . '=' wyrazenie
+    6          | ZNAK . '=' ZNAK
+    7          | ZNAK . '+' ZNAK
+    8          | ZNAK . '-' ZNAK
+    9          | ZNAK . '*' ZNAK
+   10          | ZNAK . '/' ZNAK
+   11          | ZNAK . '^' ZNAK
+
+    '+'  przesunięcie, i przejście do stanu 8
+    '-'  przesunięcie, i przejście do stanu 9
+    '*'  przesunięcie, i przejście do stanu 10
+    '/'  przesunięcie, i przejście do stanu 11
+    '^'  przesunięcie, i przejście do stanu 12
+    '='  przesunięcie, i przejście do stanu 13
+
+    '+'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '-'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '*'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '/'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '^'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 4 (wyrazenie)
+
+
+Stan 5
+
+   13 wyrazenie: '-' . ZNAK
+   20          | '-' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 14
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 15
+
+
+Stan 6
+
+   12 wyrazenie: '{' . ZNAK '}'
+   19          | '{' . wyrazenie '}'
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 16
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 17
+
+
+Stan 7
+
+    1 program: program wyrazenie . '\n'
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+
+    '+'   przesunięcie, i przejście do stanu 18
+    '-'   przesunięcie, i przejście do stanu 19
+    '*'   przesunięcie, i przejście do stanu 20
+    '/'   przesunięcie, i przejście do stanu 21
+    '^'   przesunięcie, i przejście do stanu 22
+    '\n'  przesunięcie, i przejście do stanu 23
+
+
+Stan 8
+
+    7 wyrazenie: ZNAK '+' . ZNAK
+
+    ZNAK  przesunięcie, i przejście do stanu 24
+
+
+Stan 9
+
+    8 wyrazenie: ZNAK '-' . ZNAK
+
+    ZNAK  przesunięcie, i przejście do stanu 25
+
+
+Stan 10
+
+    9 wyrazenie: ZNAK '*' . ZNAK
+
+    ZNAK  przesunięcie, i przejście do stanu 26
+
+
+Stan 11
+
+   10 wyrazenie: ZNAK '/' . ZNAK
+
+    ZNAK  przesunięcie, i przejście do stanu 27
+
+
+Stan 12
+
+   11 wyrazenie: ZNAK '^' . ZNAK
+
+    ZNAK  przesunięcie, i przejście do stanu 28
+
+
+Stan 13
+
+    5 wyrazenie: ZNAK '=' . wyrazenie
+    6          | ZNAK '=' . ZNAK
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 29
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 30
+
+
+Stan 14
+
+    4 wyrazenie: ZNAK .
+    5          | ZNAK . '=' wyrazenie
+    6          | ZNAK . '=' ZNAK
+    7          | ZNAK . '+' ZNAK
+    8          | ZNAK . '-' ZNAK
+    9          | ZNAK . '*' ZNAK
+   10          | ZNAK . '/' ZNAK
+   11          | ZNAK . '^' ZNAK
+   13          | '-' ZNAK .
+
+    '='  przesunięcie, i przejście do stanu 13
+
+    '+'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '+'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '-'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '-'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '*'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '*'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '/'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '/'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '^'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '^'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '\n'         redukcja przy użyciu reguły 4 (wyrazenie)
+    '\n'         [redukcja przy użyciu reguły 13 (wyrazenie)]
+    '}'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '}'          [redukcja przy użyciu reguły 13 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 4 (wyrazenie)
+
+
+Stan 15
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+   20          | '-' wyrazenie .
+
+    $domyślnie  redukcja przy użyciu reguły 20 (wyrazenie)
+
+
+Stan 16
+
+    4 wyrazenie: ZNAK .
+    5          | ZNAK . '=' wyrazenie
+    6          | ZNAK . '=' ZNAK
+    7          | ZNAK . '+' ZNAK
+    8          | ZNAK . '-' ZNAK
+    9          | ZNAK . '*' ZNAK
+   10          | ZNAK . '/' ZNAK
+   11          | ZNAK . '^' ZNAK
+   12          | '{' ZNAK . '}'
+
+    '+'  przesunięcie, i przejście do stanu 8
+    '-'  przesunięcie, i przejście do stanu 9
+    '*'  przesunięcie, i przejście do stanu 10
+    '/'  przesunięcie, i przejście do stanu 11
+    '^'  przesunięcie, i przejście do stanu 12
+    '='  przesunięcie, i przejście do stanu 13
+    '}'  przesunięcie, i przejście do stanu 31
+
+    '+'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '-'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '*'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '/'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '^'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '}'  [redukcja przy użyciu reguły 4 (wyrazenie)]
+
+
+Stan 17
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+   19          | '{' wyrazenie . '}'
+
+    '+'  przesunięcie, i przejście do stanu 18
+    '-'  przesunięcie, i przejście do stanu 19
+    '*'  przesunięcie, i przejście do stanu 20
+    '/'  przesunięcie, i przejście do stanu 21
+    '^'  przesunięcie, i przejście do stanu 22
+    '}'  przesunięcie, i przejście do stanu 32
+
+
+Stan 18
+
+   14 wyrazenie: wyrazenie '+' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 33
+
+
+Stan 19
+
+   15 wyrazenie: wyrazenie '-' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 34
+
+
+Stan 20
+
+   16 wyrazenie: wyrazenie '*' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 35
+
+
+Stan 21
+
+   17 wyrazenie: wyrazenie '/' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 36
+
+
+Stan 22
+
+   18 wyrazenie: wyrazenie '^' . wyrazenie
+
+    LICZBA  przesunięcie, i przejście do stanu 3
+    ZNAK    przesunięcie, i przejście do stanu 4
+    '-'     przesunięcie, i przejście do stanu 5
+    '{'     przesunięcie, i przejście do stanu 6
+
+    '-'          [redukcja przy użyciu reguły 21 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 21 (wyrazenie)
+
+    wyrazenie  przejście do stanu 37
+
+
+Stan 23
+
+    1 program: program wyrazenie '\n' .
+
+    $domyślnie  redukcja przy użyciu reguły 1 (program)
+
+
+Stan 24
+
+    7 wyrazenie: ZNAK '+' ZNAK .
+
+    $domyślnie  redukcja przy użyciu reguły 7 (wyrazenie)
+
+
+Stan 25
+
+    8 wyrazenie: ZNAK '-' ZNAK .
+
+    $domyślnie  redukcja przy użyciu reguły 8 (wyrazenie)
+
+
+Stan 26
+
+    9 wyrazenie: ZNAK '*' ZNAK .
+
+    $domyślnie  redukcja przy użyciu reguły 9 (wyrazenie)
+
+
+Stan 27
+
+   10 wyrazenie: ZNAK '/' ZNAK .
+
+    $domyślnie  redukcja przy użyciu reguły 10 (wyrazenie)
+
+
+Stan 28
+
+   11 wyrazenie: ZNAK '^' ZNAK .
+
+    $domyślnie  redukcja przy użyciu reguły 11 (wyrazenie)
+
+
+Stan 29
+
+    4 wyrazenie: ZNAK .
+    5          | ZNAK . '=' wyrazenie
+    6          | ZNAK . '=' ZNAK
+    6          | ZNAK '=' ZNAK .
+    7          | ZNAK . '+' ZNAK
+    8          | ZNAK . '-' ZNAK
+    9          | ZNAK . '*' ZNAK
+   10          | ZNAK . '/' ZNAK
+   11          | ZNAK . '^' ZNAK
+
+    '+'  przesunięcie, i przejście do stanu 8
+    '-'  przesunięcie, i przejście do stanu 9
+    '*'  przesunięcie, i przejście do stanu 10
+    '/'  przesunięcie, i przejście do stanu 11
+    '^'  przesunięcie, i przejście do stanu 12
+    '='  przesunięcie, i przejście do stanu 13
+
+    '+'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '+'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '-'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '-'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '*'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '*'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '/'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '/'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '^'          [redukcja przy użyciu reguły 4 (wyrazenie)]
+    '^'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '\n'         redukcja przy użyciu reguły 4 (wyrazenie)
+    '\n'         [redukcja przy użyciu reguły 6 (wyrazenie)]
+    '}'          redukcja przy użyciu reguły 4 (wyrazenie)
+    '}'          [redukcja przy użyciu reguły 6 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 4 (wyrazenie)
+
+
+Stan 30
+
+    5 wyrazenie: ZNAK '=' wyrazenie .
+   14          | wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+
+    '+'  przesunięcie, i przejście do stanu 18
+    '-'  przesunięcie, i przejście do stanu 19
+    '*'  przesunięcie, i przejście do stanu 20
+    '/'  przesunięcie, i przejście do stanu 21
+    '^'  przesunięcie, i przejście do stanu 22
+
+    '+'          [redukcja przy użyciu reguły 5 (wyrazenie)]
+    '-'          [redukcja przy użyciu reguły 5 (wyrazenie)]
+    '*'          [redukcja przy użyciu reguły 5 (wyrazenie)]
+    '/'          [redukcja przy użyciu reguły 5 (wyrazenie)]
+    '^'          [redukcja przy użyciu reguły 5 (wyrazenie)]
+    $domyślnie  redukcja przy użyciu reguły 5 (wyrazenie)
+
+
+Stan 31
+
+   12 wyrazenie: '{' ZNAK '}' .
+
+    $domyślnie  redukcja przy użyciu reguły 12 (wyrazenie)
+
+
+Stan 32
+
+   19 wyrazenie: '{' wyrazenie '}' .
+
+    $domyślnie  redukcja przy użyciu reguły 19 (wyrazenie)
+
+
+Stan 33
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   14          | wyrazenie '+' wyrazenie .
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+
+    '*'  przesunięcie, i przejście do stanu 20
+    '/'  przesunięcie, i przejście do stanu 21
+    '^'  przesunięcie, i przejście do stanu 22
+
+    $domyślnie  redukcja przy użyciu reguły 14 (wyrazenie)
+
+
+Stan 34
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   15          | wyrazenie '-' wyrazenie .
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+
+    '*'  przesunięcie, i przejście do stanu 20
+    '/'  przesunięcie, i przejście do stanu 21
+    '^'  przesunięcie, i przejście do stanu 22
+
+    $domyślnie  redukcja przy użyciu reguły 15 (wyrazenie)
+
+
+Stan 35
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   16          | wyrazenie '*' wyrazenie .
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+
+    '^'  przesunięcie, i przejście do stanu 22
+
+    $domyślnie  redukcja przy użyciu reguły 16 (wyrazenie)
+
+
+Stan 36
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   17          | wyrazenie '/' wyrazenie .
+   18          | wyrazenie . '^' wyrazenie
+
+    '^'  przesunięcie, i przejście do stanu 22
+
+    $domyślnie  redukcja przy użyciu reguły 17 (wyrazenie)
+
+
+Stan 37
+
+   14 wyrazenie: wyrazenie . '+' wyrazenie
+   15          | wyrazenie . '-' wyrazenie
+   16          | wyrazenie . '*' wyrazenie
+   17          | wyrazenie . '/' wyrazenie
+   18          | wyrazenie . '^' wyrazenie
+   18          | wyrazenie '^' wyrazenie .
+
+    '^'  przesunięcie, i przejście do stanu 22
+
+    $domyślnie  redukcja przy użyciu reguły 18 (wyrazenie)
